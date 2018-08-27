@@ -1,0 +1,45 @@
+[user]
+	name = godai0505
+	email = tanagoda.tech@gmail.com
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+[push]
+	default = simple
+[core]
+	precomposeunicode = true
+	quotepath = false
+	editor = vim -c \"set fenc=utf-8\"
+[alias]
+  # git log-dog
+  log-dog = log --decorate --oneline --graph
+
+  # git branch-edit(branchの説明を編集する)
+  branch-edit = branch --edit-description
+
+  # branch-descコマンドの中で利用
+  branch-conf = "!f () {\
+    branch_name=`git rev-parse --abbrev-ref ${1:-@}`;\
+    branch_description=`git config branch.${branch_name}.description`;\
+    if [ -z ${branch_description} ]; then\
+      echo \"Please edit branch_description. Use 'git branch-edit ${1}'\";\
+    else\
+      echo ${branch_description};\
+    fi;\
+  };f"
+
+  # git branch-desc(branch表示の際にブランチの説明も表示する)
+  bd = "!f () {\
+    git for-each-ref --format='%(refname:short)' refs/heads | xargs -I@ sh -c '\
+      git branch | grep @ \
+      && echo -n \"    --- \"\
+      && git branch-conf @\
+    ;';\
+  };f"
+
+  # branchを更新順に並べて表示する
+  br = for-each-ref --sort=committerdate refs/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+
+  # aliasのlistを表示
+  alias = !git config --get-regexp '^alias\\.' | sed 's/alias\\.\\([^ ]*\\) \\(.*\\)/\\1\\\t => \\2/' | sort
