@@ -12,14 +12,18 @@
 	quotepath = false
 	editor = vim -c \"set fenc=utf-8\"
 [alias]
+  ########################## git log ##############################
+
   # git log-dog
   log-dog = log --decorate --oneline --graph
 
-  # git branch-edit(branchの説明を編集する)
+  ########################## git branch ##############################
+
+  # git branch-edit (branchの説明を編集)
   branch-edit = branch --edit-description
 
-  # branch-descコマンドの中で利用
-  branch-conf = "!f () {\
+  # git branch-desc (branchの説明を追加)
+  branch-desc = "!f () {\
     branch_name=`git rev-parse --abbrev-ref ${1:-@}`;\
     branch_description=`git config branch.${branch_name}.description`;\
     if [ -z ${branch_description} ]; then\
@@ -29,17 +33,19 @@
     fi;\
   };f"
 
-  # git branch-desc(branch表示の際にブランチの説明も表示する)
+  # git bd (branch名の表示 & branchの説明も表示)
   bd = "!f () {\
     git for-each-ref --format='%(refname:short)' refs/heads | xargs -I@ sh -c '\
       git branch | grep @ \
       && echo -n \"    --- \"\
-      && git branch-conf @\
+      && git branch-desc @\
     ;';\
   };f"
 
   # branchを更新順に並べて表示する
   br = for-each-ref --sort=committerdate refs/ --format='%(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(contents:subject) - %(authorname) (%(color:green)%(committerdate:relative)%(color:reset))'
+
+  ########################## alias list ##############################
 
   # aliasのlistを表示
   alias = !git config --get-regexp '^alias\\.' | sed 's/alias\\.\\([^ ]*\\) \\(.*\\)/\\1\\\t => \\2/' | sort
